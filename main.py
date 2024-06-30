@@ -4,7 +4,7 @@ import random
 from moviepy.editor import VideoFileClip, TextClip, CompositeVideoClip, concatenate_videoclips
 from moviepy.video.fx.resize import resize
 from moviepy.audio.fx.all import volumex
-from elevenlabs import generate, save
+from elevenlabs import ElevenLabs
 
 # Функция для получения рандомного видео с Pexels
 def get_random_video(api_key, query="sea"):
@@ -28,8 +28,10 @@ def get_random_fact():
 
 # Функция для озвучивания текста с использованием elevenlabs
 def text_to_speech_elevenlabs(text, api_key, filename="fact.mp3"):
-    audio = generate(text=text, api_key=api_key, voice="Rachel")
-    save(audio, filename)
+    eleven_labs = ElevenLabs(api_key=api_key)
+    audio = eleven_labs.text_to_speech(text=text, voice="Rachel")
+    with open(filename, "wb") as audio_file:
+        audio_file.write(audio)
     return filename
 
 # Функция для создания вертикального видео с текстом
