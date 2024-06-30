@@ -3,7 +3,6 @@ import requests
 import random
 from moviepy.editor import VideoFileClip, AudioFileClip, CompositeVideoClip
 from gtts import gTTS
-from pydub import AudioSegment
 
 # Функция для получения рандомного видео с Pexels
 def get_random_video(api_key, query="sea"):
@@ -11,6 +10,7 @@ def get_random_video(api_key, query="sea"):
         "Authorization": api_key
     }
     response = requests.get(f"https://api.pexels.com/videos/search?query={query}&per_page=1&page={random.randint(1, 10)}", headers=headers)
+    response.raise_for_status()  # Проверка на успешность запроса
     video_url = response.json()["videos"][0]["video_files"][0]["link"]
     video_data = requests.get(video_url)
     with open("random_video.mp4", "wb") as video_file:
@@ -19,8 +19,9 @@ def get_random_video(api_key, query="sea"):
 
 # Функция для получения рандомного факта
 def get_random_fact():
-    response = requests.get("https://random-fact-api.herokuapp.com/today")
-    fact = response.json()["fact"]
+    response = requests.get("https://uselessfacts.jsph.pl/random.json?language=en")
+    response.raise_for_status()  # Проверка на успешность запроса
+    fact = response.json()["text"]
     return fact
 
 # Функция для озвучивания текста
